@@ -1,70 +1,109 @@
-# mBot2 Python 🤖💃
+# mbot2 🤖
 
-Control a **Makeblock mBot2 (CyberPi)** robot from your PC in **pure Python over Bluetooth** —
-no mBlock, no uploading, no special dongle. A learn-to-code project built with my 8-year-old daughter.
+Control a **Makeblock mBot2 (CyberPi)** from your computer in **plain Python over Bluetooth** —
+no mBlock, no uploading, no dongle. Write a few lines of Python and the robot moves, lights up,
+and beeps in real time.
 
-The headline feature: a **live dance party** you trigger from the keyboard. Pick a number, the robot
-moves, flashes its lights, and beeps — all driven in real time from Python.
+```python
+from mbot2 import MBot2
+
+with MBot2() as bot:        # finds & connects over Bluetooth automatically
+    bot.led(0, 255, 0)      # green
+    bot.forward(50, 1)      # drive at speed 50 for 1 second
+    bot.turn(90)            # turn 90 degrees
+    bot.beep(880)           # play a note
+```
+
+A learn-to-code project, built with my 8-year-old daughter.
+
+## Install
+
+```bash
+pip install -e .
+```
+
+That installs the `mbot2` package (and `bleak`) so `import mbot2` works in any script.
+Then turn the robot **on** and make sure it isn't connected to a phone or mBlock.
+
+> Just want to run the examples without installing? They work too — each one adds the
+> project folder to the path automatically. `pip install -e .` is only needed for scripts
+> you write elsewhere.
+
+## Your first script
+
+Create `myrobot.py` anywhere:
+
+```python
+from mbot2 import MBot2
+
+bot = MBot2()               # connect
+bot.led(255, 0, 255)        # purple
+bot.forward(40, 1)          # forward 1 second (it auto-stops)
+bot.turn(180)               # spin around
+bot.beep(660)
+bot.disconnect()
+```
+
+Run it: `py myrobot.py`. That's the whole idea — simple, top-to-bottom Python.
+
+## What the robot can do
+
+| Category | Commands |
+| --- | --- |
+| **Move** | `forward(speed, secs)`, `backward(...)`, `turn_left(...)`, `turn_right(...)`, `turn(degrees)`, `drive(left, right)`, `stop()` |
+| **Lights** | `led(r, g, b)`, `led(r, g, b, which=1..5)`, `led_off()`, `led_effect("rainbow")` |
+| **Sound** | `beep(freq, secs)`, `play_note(note, beat)`, `volume(0-100)` |
+| **Screen** | `show("hi!")` |
+| **Sensors** | `distance()`, `battery()`, `brightness()`, `loudness()`, `roll()`, `pitch()`, `yaw()`, `button("a")` |
+| **Anything** | `run("...")` runs any Python on the robot; `eval("...")` runs it and returns the result |
+
+Movement tip: pass `secs` (like `forward(50, 1)`) and the robot stops **itself** after that
+time — safe even if a Bluetooth packet drops. Leave `secs` off and it keeps going until `stop()`.
+
+Don't know a command? **Ask the robot:** `py tools/introspect.py` prints the full list its
+firmware supports.
+
+## Examples
+
+Run any of these (`py examples/<name>.py`):
+
+| File | What it does |
+| --- | --- |
+| `examples/hello.py` | Lights + sound only (no movement) — start here |
+| `examples/drive_square.py` | Drives in a square |
+| `examples/dance_party.py` | Interactive dance menu (the fun one!) |
+| `examples/keyboard_drive.py` | Drive it like a remote control (W/A/S/D) |
+| `examples/read_sensors.py` | Robot reacts to distance/light/sound |
+
+## Project layout
+
+```
+mbot2/         the library  (protocol.py, connection.py, robot.py)
+examples/      ready-to-run scripts (great for tinkering)
+tools/         diagnostics: scan.ps1, explore_ble.py, probe_ble.py, introspect.py
+onboard/       dance_party.py — the MicroPython version to run ON the robot via mBlock
+```
 
 ## How it works
 
-The CyberPi's Bluetooth pipe speaks Makeblock's private **"f3/f4" framing** (the same "Live Mode"
-mBlock uses). Each frame wraps a snippet of Python (e.g. `mbot2.forward(50)`) that the robot
-evaluates instantly and can answer with a JSON result. This repo implements that protocol from
-scratch on top of [`bleak`](https://github.com/hbldh/bleak):
+The CyberPi's Bluetooth pipe speaks Makeblock's private **"f3/f4" framing** — the same
+"Live Mode" mBlock uses. Each frame wraps a snippet of Python that the robot evaluates
+instantly (and can answer with JSON). This project implements that protocol on top of
+[`bleak`](https://github.com/hbldh/bleak):
 
 1. Connect over BLE, subscribe to notify characteristic `ffe2`, write to `ffe3`
-2. Send the "enter live mode" frame
-3. Spam a sensor read until the robot replies (handshake)
+2. Send the "enter Live Mode" frame
+3. Send a sensor read until the robot replies (handshake)
 4. Stream Python commands → the robot runs them live
 
-## Setup
-
-```bash
-pip install -r requirements.txt
-```
-
-Turn the robot **on**, make sure it isn't connected to a phone or mBlock, and you're ready.
-
-## Run it
-
-```bash
-# Safe check — lights + sound only, robot does NOT move
-py mbot2_live.py --test
-
-# Gentle drive + spin (give it floor space!)
-py mbot2_live.py --move
-
-# THE DANCE PARTY (run this one with a kid)
-py dance_party_live.py
-#   1 = Wiggle Boogie
-#   2 = Spin & Sparkle
-#   q = Quit
-```
-
-## Files
-
-| File | What it is |
-| --- | --- |
-| `mbot2_live.py` | The driver: `MBot2Live` class (pure-Python BLE control) + `--test` / `--move` |
-| `dance_party_live.py` | Interactive dance menu — the fun one |
-| `dance_party.py` | The same dances as **onboard** MicroPython (paste into mBlock Upload mode to run untethered) |
-| `bluetooth_scan.ps1` | Windows PowerShell scanner that finds the robot over BLE |
-| `ble_explore.py` | Lists the robot's Bluetooth services/characteristics |
-| `ble_probe.py` | Probes the BLE pipe (used while reverse-engineering the protocol) |
-| `mbot2_control.py` | Early attempt using the old mBot1 protocol — kept for history; **superseded by `mbot2_live.py`** |
-
-## For kids — things to change
-
-Open `dance_party_live.py` and try:
-- **Colors:** `led(255, 0, 0)` → the numbers are Red, Green, Blue (0–255). Invent a color!
-- **Speed:** the number in `forward(50, 0.5)` — try `80`.
-- **Beeps:** `beep(bot, 880)` — bigger number = higher note.
-- **New dance:** copy the `wiggle_boogie` block, rename it, change the moves.
+See `mbot2/protocol.py` for the exact frame format.
 
 ## Credits
 
-The f3/f4 protocol details were figured out with help from
+The f3/f4 protocol was figured out with help from
 [Hulupeep/mbot_ruvector](https://github.com/Hulupeep/mbot_ruvector) (which traces back to
-Makeblock's own `makeblock` pip package). The Python/`bleak` driver here is an independent
-implementation.
+Makeblock's own `makeblock` pip package). The Python/`bleak` implementation here is original.
+
+## License
+
+MIT
