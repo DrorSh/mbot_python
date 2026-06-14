@@ -3,9 +3,6 @@ drive_square.py - make the robot drive in a square.
 Give it floor space!   Run it:  py examples/drive_square.py
 """
 
-import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-
 from mbot2 import MBot2
 
 with MBot2() as bot:

@@ -3,9 +3,6 @@ hello.py - the simplest possible mBot2 script: lights and sound, no movement.
 Run it:  py examples/hello.py
 """
 
-import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))   # find the mbot2 package
-
 from mbot2 import MBot2
 
 with MBot2() as bot:

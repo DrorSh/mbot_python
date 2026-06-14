@@ -7,9 +7,6 @@ exactly which commands its firmware supports -- more accurate than any webpage.
 Run it:  py tools/introspect.py
 """
 
-import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-
 from mbot2 import MBot2
 
 # (object name, what it does)

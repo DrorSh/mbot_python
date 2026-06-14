@@ -4,9 +4,6 @@ The robot reacts: it lights up red when something gets close.
 Run it:  py examples/read_sensors.py   (press Ctrl-C to stop)
 """
 
-import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
-
 import time
 from mbot2 import MBot2
 
