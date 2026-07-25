@@ -70,6 +70,10 @@ with MBot2() as bot:        # auto-connects; auto-disconnects at the end
 > ⚠️ `distance()` and `loudness()` are best-guess signatures and may need fixing — see
 > [Sensors & motion](#sensors--motion-cyberpi) below for the confirmed names.
 
+> 📖 **Want the deep dive?** [**docs/sensors.md**](sensors.md) explains the **ultrasonic**
+> and **line-follower** sensors in detail — how they work, their range/limits, ready-to-run
+> obstacle-avoid and line-follow examples, and troubleshooting tips.
+
 ### Escape hatches — run ANY robot command
 | Method | What it does |
 | --- | --- |

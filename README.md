@@ -68,6 +68,10 @@ reference of the most fun commands. Great taped up next to the computer.
 plus the complete robot API. Or **ask the robot directly:** `py tools/introspect.py` prints the
 full list its firmware supports.
 
+**Sensors in depth:** **[docs/sensors.md](docs/sensors.md)** goes deep on the **ultrasonic**
+(distance) and **line-follower** sensors — how they work, their range and limits, worked
+obstacle-avoid and line-follow examples, and troubleshooting.
+
 ## Examples
 
 Run any of these (`py examples/<name>.py`):
@@ -87,7 +91,8 @@ mbot2/         the library  (protocol.py, connection.py, robot.py)
 examples/      ready-to-run scripts (great for tinkering)
 tools/         diagnostics: scan.ps1, explore_ble.py, probe_ble.py, introspect.py
 onboard/       dance_party.py — the MicroPython version to run ON the robot via mBlock
-docs/          commands.md — full command reference; cheatsheet.html/.pdf — one-page kid cheat sheet
+docs/          commands.md — full command reference; sensors.md — ultrasonic & line-follower
+               deep dive; cheatsheet.html/.pdf — one-page kid cheat sheet
 ```
 
 ## How it works
