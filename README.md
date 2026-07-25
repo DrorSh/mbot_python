@@ -60,8 +60,9 @@ Run it: `py myrobot.py`. That's the whole idea — simple, top-to-bottom Python.
 Movement tip: pass `secs` (like `forward(50, 1)`) and the robot stops **itself** after that
 time — safe even if a Bluetooth packet drops. Leave `secs` off and it keeps going until `stop()`.
 
-**Kid-friendly cheat sheet:** open **[docs/cheatsheet.html](docs/cheatsheet.html)** in a browser
-(or print it) — a colorful one-pager of the most fun commands. Great next to the computer.
+**Kid-friendly cheat sheet:** open **[docs/cheatsheet.html](docs/cheatsheet.html)** in a browser,
+or print the ready-made **[docs/cheatsheet.pdf](docs/cheatsheet.pdf)** — a colorful one-page (A4)
+reference of the most fun commands. Great taped up next to the computer.
 
 **Full command reference:** see **[docs/commands.md](docs/commands.md)** — every wrapper method
 plus the complete robot API. Or **ask the robot directly:** `py tools/introspect.py` prints the
@@ -86,7 +87,7 @@ mbot2/         the library  (protocol.py, connection.py, robot.py)
 examples/      ready-to-run scripts (great for tinkering)
 tools/         diagnostics: scan.ps1, explore_ble.py, probe_ble.py, introspect.py
 onboard/       dance_party.py — the MicroPython version to run ON the robot via mBlock
-docs/          commands.md — full command reference; cheatsheet.html — printable kid cheat sheet
+docs/          commands.md — full command reference; cheatsheet.html/.pdf — one-page kid cheat sheet
 ```
 
 ## How it works
