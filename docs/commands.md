@@ -62,13 +62,15 @@ with MBot2() as bot:        # auto-connects; auto-disconnects at the end
 | --- | --- | --- |
 | `battery()` | Battery % (0-100) | `cyberpi.get_battery()` |
 | `brightness()` | Ambient light (0-100) | `cyberpi.get_bri()` |
-| `loudness()` | Mic loudness (0-100) ⚠️ arg unverified | `cyberpi.get_loudness('maximum')` |
+| `loudness()` | Mic loudness (0-100) | `cyberpi.get_loudness('maximum')` |
 | `roll()` / `pitch()` / `yaw()` | Tilt angles (degrees) | `cyberpi.get_roll()` … |
 | `button(name="a")` | `True` while pressed (`"a"`/`"b"`) | `cyberpi.controller.is_press(name)` |
-| `distance()` | Ultrasonic cm ⚠️ **namespace unverified** | `mbot2.ultrasonic2.get(1)` |
+| `distance()` | Ultrasonic cm (reads ~300 when clear) | `cyberpi.ultrasonic2.get(1)` |
 
-> ⚠️ `distance()` and `loudness()` are best-guess signatures and may need fixing — see
-> [Sensors & motion](#sensors--motion-cyberpi) below for the confirmed names.
+> ✅ All the wrapper methods above are **verified working on a real mBot2** (firmware
+> 44.01.013). Earlier drafts flagged `distance()` and `loudness()` as unverified — the
+> ultrasonic namespace turned out to be `cyberpi.ultrasonic2` (not `mbot2.ultrasonic2`),
+> and both are now confirmed.
 
 > 📖 **Want the deep dive?** [**docs/sensors.md**](sensors.md) explains the **ultrasonic**
 > and **line-follower** sensors in detail — how they work, their range/limits, ready-to-run

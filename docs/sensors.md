@@ -41,13 +41,14 @@ This is the same trick bats and submarines (sonar) use.
 
 | Thing | Value | Kid translation |
 | --- | --- | --- |
-| Range | **3 cm – 400 cm** *(Me sensor; error < 1 cm)* | From "almost touching" to "across the room" |
+| Range | **3 cm – ~300 cm** on this mBot2 *(Me sensor: 3–400 cm, error < 1 cm)* | From "almost touching" to "across the room" |
 | Beam angle | **less than 30°** | It only "sees" a narrow cone straight ahead |
 | Sound frequency | **42 kHz** | A super-high squeak we can't hear |
 | Power | 5 V | Comes from the robot |
 
-> The mBot2's *Ultrasonic Sensor 2* reads reliably out to a couple of metres — plenty for
-> a robot on a table or floor.
+> ✅ **Verified on a real mBot2** (firmware 44.01.013): `bot.distance()` returns a live value
+> in cm, and reads **300** when nothing is in range. Held a hand ~13 cm away and it read
+> `13.4`.
 
 ### Reading it in Python
 
@@ -59,8 +60,9 @@ with MBot2() as bot:
     print("Nearest object:", cm, "cm")
 ```
 
-`bot.distance()` is a wrapper for `mbot2.ultrasonic2.get(1)` — the `1` is the sensor's
-position on the mBuild chain (the first/only ultrasonic).
+`bot.distance()` is a wrapper for `cyberpi.ultrasonic2.get(1)`. When nothing is in range
+it reads **300** (the sensor's max on this mBot2), so `bot.distance()` returning `300.0`
+means "the coast is clear."
 
 **A "don't crash" loop** — drive forward, but stop and turn when something gets close:
 
@@ -82,12 +84,20 @@ with MBot2() as bot:
 ### The glowing "eyes" 💡
 
 On the mBot2's Ultrasonic Sensor 2, the ring around each eye is a set of programmable blue
-LEDs — you can make them light up or pulse (great for giving the robot a "mood"). Explore
-what your firmware supports with:
+LEDs — and the firmware has built-in **emotion animations** for them, so the robot's "eyes"
+can look happy, wink, get dizzy, glance around, and more:
 
 ```python
-print(bot.eval("dir(mbot2.ultrasonic2)"))
+bot.run("cyberpi.ultrasonic2.happy_effect()")     # 😊
+bot.run("cyberpi.ultrasonic2.wink_effect()")      # 😉
+bot.run("cyberpi.ultrasonic2.dizzy_effect()")     # 😵
+bot.run("cyberpi.ultrasonic2.look_left_effect()") # 👀
+bot.run("cyberpi.ultrasonic2.set_bri(50)")        # plain brightness 0–100
 ```
+
+See the full list (verified on firmware 44.01.013) with
+`print(bot.eval("dir(cyberpi.ultrasonic2)"))` — others include `naughty_effect`,
+`thinking_effect`, `standby_effect`, and `show_led_emotion`.
 
 ### Tips & gotchas ⚠️
 
@@ -142,20 +152,25 @@ it's the same kind of light a TV remote uses.)
 ### Reading it in Python
 
 There's no friendly wrapper for this one yet, so use `bot.eval(...)` to call the sensor
-directly. On the mBot2's Quad RGB Sensor the handy calls are:
+directly. These calls are all **verified working on a real mBot2** (firmware 44.01.013):
 
 ```python
 from mbot2 import MBot2
 
 with MBot2() as bot:
-    # A number describing which probes see the line (a "pattern")
+    # Which probes see the line, as a 4-bit pattern 0..15 (all four = 15)
     print(bot.eval("cyberpi.quad_rgb_sensor.get_line_sta()"))
 
     # How far off-centre the line is, roughly -100 (far left) .. +100 (far right)
     print(bot.eval("cyberpi.quad_rgb_sensor.get_offset_track()"))
+
+    # Ask one probe (1–4) directly
+    print(bot.eval("cyberpi.quad_rgb_sensor.is_line(1)"))          # 1 = over the line
+    print(bot.eval("[cyberpi.quad_rgb_sensor.get_gray(i) for i in (1,2,3,4)]"))  # 0–100 each
 ```
 
-> ⚠️ Exact method names can vary by firmware. Confirm what *your* robot supports with
+> 💡 Other handy methods on the sensor: `study()` (calibrate to *your* black & white),
+> `get_red/green/blue(i)`, `set_led(...)`, and `get_color_sta()`. See them all with
 > `print(bot.eval("dir(cyberpi.quad_rgb_sensor)"))`, or run `py tools/introspect.py`.
 
 **A simple follow-the-line loop** using the "offset" (how far the line has drifted):
@@ -201,7 +216,7 @@ To discover exactly what any sensor can do on *your* robot:
 ```python
 from mbot2 import MBot2
 with MBot2() as bot:
-    print(bot.eval("dir(mbot2.ultrasonic2)"))
+    print(bot.eval("dir(cyberpi.ultrasonic2)"))
     print(bot.eval("dir(cyberpi.quad_rgb_sensor)"))
 ```
 

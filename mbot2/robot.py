@@ -149,8 +149,8 @@ class MBot2:
 
     # -- sensors (return a value from the robot) ----------------------------
     def distance(self):
-        """Ultrasonic distance in cm (needs the ultrasonic sensor on port 1)."""
-        return self.eval("mbot2.ultrasonic2.get(1)")
+        """Ultrasonic distance in cm (reads ~300 max when nothing is in range)."""
+        return self.eval("cyberpi.ultrasonic2.get(1)")
 
     def battery(self):
         """Battery level (0-100)."""
