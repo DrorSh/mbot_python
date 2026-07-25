@@ -83,21 +83,46 @@ with MBot2() as bot:
 
 ### The glowing "eyes" 💡
 
-On the mBot2's Ultrasonic Sensor 2, the ring around each eye is a set of programmable blue
-LEDs — and the firmware has built-in **emotion animations** for them, so the robot's "eyes"
-can look happy, wink, get dizzy, glance around, and more:
+Each "eye" has a ring of **4 blue LEDs** (8 in total). They're blue-only — no color, no
+pixels — so the "eyes" are really just blue segments you can light up. There are two ways
+to drive them (both **verified on a real mBot2, firmware 44.01.013**).
+
+**1. Built-in emotion animations (the easy, fun way).** These self-animate the LEDs — just
+call one; no `led_show()` needed:
 
 ```python
-bot.run("cyberpi.ultrasonic2.happy_effect()")     # 😊
-bot.run("cyberpi.ultrasonic2.wink_effect()")      # 😉
-bot.run("cyberpi.ultrasonic2.dizzy_effect()")     # 😵
-bot.run("cyberpi.ultrasonic2.look_left_effect()") # 👀
-bot.run("cyberpi.ultrasonic2.set_bri(50)")        # plain brightness 0–100
+bot.run("cyberpi.ultrasonic2.happy_effect()")      # 😊
+bot.run("cyberpi.ultrasonic2.wink_effect()")       # 😉
+bot.run("cyberpi.ultrasonic2.dizzy_effect()")      # 😵
+bot.run("cyberpi.ultrasonic2.look_left_effect()")  # 👀
+bot.run("cyberpi.ultrasonic2.show_led_emotion(0)")  # try 0,1,2… for different patterns
 ```
 
-See the full list (verified on firmware 44.01.013) with
-`print(bot.eval("dir(cyberpi.ultrasonic2)"))` — others include `naughty_effect`,
-`thinking_effect`, `standby_effect`, and `show_led_emotion`.
+The full set of animations: `happy_effect`, `new_happy_effect`, `wink_effect`,
+`naughty_effect`, `aggrieved_effect`, `raises_brow_effect`, `look_left_effect`,
+`look_right_effect`, `eye_left_effect`, `eye_right_effect`, `thinking_effect`,
+`dizzy_effect`, `standby_effect`, and `show_led_emotion(n)`.
+
+**2. Manual control (turn the eyes on/off yourself).** The LEDs are controlled as **two
+groups of 4** (one per eye). After changing them you **must** call `led_show()` to display:
+
+```python
+def led_show(): bot.run("cyberpi.ultrasonic2.led_show()")
+
+bot.run("cyberpi.ultrasonic2.set_both_led_bri(100, 100)"); led_show()  # both eyes ON
+bot.run("cyberpi.ultrasonic2.set_both_led_bri(0, 0)");     led_show()  # both eyes OFF
+bot.run("cyberpi.ultrasonic2.set_both_led_bri(100, 0)");   led_show()  # one eye only
+```
+
+> **Gotchas learned by testing this hardware:**
+> - Use **`set_both_led_bri`** to turn LEDs on/off — the reliable "off" is
+>   `set_both_led_bri(0, 0)` + `led_show()`.
+> - **`set_bri(v)` is only a master brightness scaler** (0–100). It does *not* switch LEDs
+>   on by itself — if they've been zeroed, scaling brightness does nothing.
+> - **`set_single_led_bri()` did not light individual LEDs** on this firmware — stick to
+>   the two-eye `set_both_led_bri`, or use the built-in animations for per-LED effects.
+> - **Left/right is mirrored:** the first `set_both_led_bri` value lights the eye on *your*
+>   right as you face the robot.
 
 ### Tips & gotchas ⚠️
 
