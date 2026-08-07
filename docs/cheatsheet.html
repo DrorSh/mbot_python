@@ -11,8 +11,12 @@
     --ink: #1b2440;
     --ink-soft: #566089;
     --line: #e3e8f2;
-    --code-bg: #0f1836;
-    --code-ink: #eaf0ff;
+    --code-bg: #ffffff;
+    --code-ink: #232b47;
+    --code-c: #5c6788;   /* comment */
+    --code-k: #c2186f;   /* keyword */
+    --code-f: #9a5b00;   /* function */
+    --code-n: #0a6d60;   /* number/string */
     --teal: #0fb5a5;
     --grape: #7c5cff;
     --coral: #ff6b5c;
@@ -27,17 +31,16 @@
       --ink: #eef1fb;
       --ink-soft: #9aa6cf;
       --line: #2a3357;
-      --code-bg: #0a1027;
       --shadow: 18px 18px 0 rgba(0,0,0,.25);
     }
   }
   :root[data-theme="light"] {
     --paper: #f6f8fb; --card: #fff; --ink: #1b2440; --ink-soft: #566089;
-    --line: #e3e8f2; --code-bg: #0f1836; --shadow: 18px 18px 0 rgba(27,36,64,.06);
+    --line: #e3e8f2; --shadow: 18px 18px 0 rgba(27,36,64,.06);
   }
   :root[data-theme="dark"] {
     --paper: #10152a; --card: #191f39; --ink: #eef1fb; --ink-soft: #9aa6cf;
-    --line: #2a3357; --code-bg: #0a1027; --shadow: 18px 18px 0 rgba(0,0,0,.25);
+    --line: #2a3357; --shadow: 18px 18px 0 rgba(0,0,0,.25);
   }
 
   * { box-sizing: border-box; }
@@ -95,13 +98,14 @@
   }
   pre.code {
     margin: 0; background: var(--code-bg); color: var(--code-ink);
+    border: 1.5px solid var(--line);
     border-radius: 16px; padding: 16px 18px; overflow-x: auto;
     font-size: 15px; line-height: 1.7;
   }
-  .code .c { color: #8fa6d6; }      /* comment */
-  .code .k { color: #ff9ecb; }      /* keyword */
-  .code .f { color: #ffd479; }      /* function */
-  .code .n { color: #7ee0c8; }      /* number/string */
+  .code .c { color: var(--code-c); }      /* comment */
+  .code .k { color: var(--code-k); }      /* keyword */
+  .code .f { color: var(--code-f); }      /* function */
+  .code .n { color: var(--code-n); }      /* number/string */
 
   /* ---------- cards ---------- */
   .grid {
@@ -166,7 +170,7 @@
     /* Force a light, ink-friendly print regardless of the viewer's theme */
     :root, :root[data-theme="dark"] {
       --paper: #fff; --card: #fff; --ink: #1b2440; --ink-soft: #4b5578;
-      --line: #d0d8e8; --code-bg: #10193a;
+      --line: #d0d8e8;
     }
     /* Print the colors — browsers drop backgrounds by default */
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -209,7 +213,7 @@
     .tips .b { font-size: 13px; }
 
     /* --- Code blocks: small but readable --- */
-    pre.code { font-size: 8.5px; padding: 7px 9px; line-height: 1.45; border-radius: 8px; }
+    pre.code { font-size: 8.5px; padding: 7px 9px; line-height: 1.45; border-radius: 8px; border-width: 1px; }
     .program { margin-top: 7px; }
     .program pre.code { font-size: 9px; }
     .foot { display: none; }
